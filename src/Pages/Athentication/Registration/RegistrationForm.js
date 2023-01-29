@@ -20,9 +20,9 @@ const RegistrationForm = () => {
       .then((result) => {
         console.log(result);
 		if(result.status === "ok"){
-			toast.success("User created successfully")
+			toast.success("User created successfully.please login")
 			reset()
-			navigate('/')
+			navigate('../login')
 		}else if(result.error === 'User Exists'){
 			toast.error("User already exists")
 		}else{

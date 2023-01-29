@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const {
@@ -11,6 +11,8 @@ const LoginForm = () => {
     reset,
   } = useForm();
   const navigate = useNavigate();
+  let location = useLocation();
+let from = location.state?.from?.pathname || "/";
 
   const loginData = (data) => {
     console.log(data);
@@ -32,7 +34,7 @@ const LoginForm = () => {
           toast.success("Login successful");
 		  localStorage.setItem("token",result.data)
           reset();
-          navigate("/");
+          navigate(from, { replace: true })
         }
       });
   };

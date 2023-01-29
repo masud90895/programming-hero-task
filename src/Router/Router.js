@@ -4,6 +4,7 @@ import LoginForm from "../Pages/Athentication/Login/LoginForm";
 import RegistrationForm from "../Pages/Athentication/Registration/RegistrationForm";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import Table from "../Pages/Table/Table";
+import PrivetRoutes from "./PrivetRoutes";
 
 export const router = createBrowserRouter([
    {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
     children :[
         {
             path: "/",
-            element : <Table/>
+            element : <PrivetRoutes><Table/></PrivetRoutes>
         },
         {
             path:"login",
