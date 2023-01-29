@@ -7,6 +7,7 @@ export const AuthContext = createContext()
 const AuthProvider = ({children}) => {
     const [user,setUser] = useState(null)
     const [loading,setLoading] = useState(true)
+    
     useEffect(()=>{
       setLoading(true)
         fetch(`${process.env.REACT_APP_serverURL}/api/getUserData`, {
@@ -23,17 +24,18 @@ const AuthProvider = ({children}) => {
     })
     .then(res=>res.json())
     .then(data=>{
-      console.log(data);
       if(data.status === "ok"){
         setUser(data.data)
-        setLoading(false)
+       
       }
      else if(data.status === "error"){
       toast.error(data.data)
-    }})
+    }
+    setLoading(false)
+  })
     },[])
 
-    const authInfo ={user,loading}
+    const authInfo ={user,loading,setUser}
 
     
     return (

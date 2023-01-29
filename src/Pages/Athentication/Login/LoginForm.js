@@ -34,7 +34,7 @@ let from = location.state?.from?.pathname || "/";
           toast.success("Login successful");
 		  localStorage.setItem("token",result.data)
           reset();
-          navigate(from, { replace: true })
+          navigate("/")
         }
       });
   };
