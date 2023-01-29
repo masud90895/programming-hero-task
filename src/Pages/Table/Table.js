@@ -7,7 +7,9 @@ const Table = () => {
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
   const { user, loading } = useContext(AuthContext);
+  const [refresh,setRefresh] = useState(false);
   const navigate = useNavigate();
+  const time= new Date().toLocaleString();
 
   console.log(user);
 
@@ -94,7 +96,7 @@ const Table = () => {
               </tbody>
             </table>
           </div>
-          {showModal && <Modal setShowModal={setShowModal} />}
+          {showModal && <Modal setShowModal={setShowModal} user={user} time={time} refresh={refresh} setRefresh={setRefresh}/>}
         </div>
       )}
     </>

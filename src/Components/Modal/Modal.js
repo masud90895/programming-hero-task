@@ -1,28 +1,66 @@
-import React from 'react';
+import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
-const Modal = ({setShowModal}) => {
+const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
-  const addData=(data)=>{  
-console.log(data);
-}
-    return (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center shadow-xl border border-black  duration-1000 transition ease-in-out">
+
+  const addData = (data) => {
+    const {fullName,email,phone,amount} = data;
+   
+    const billInfo= {
+      fullName,
+      email,
+      phone,
+      amount,
+      time,
+      AddedUserEmail: user?.email
+    }
+    fetch(`${process.env.REACT_APP_serverURL}/api/add-billing`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(billInfo),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        if(result.success){
+
+          toast.success("Product added successfully")
+          reset()
+          setRefresh(!refresh)
+          setShowModal(false)
+        }else{
+          toast.error(result.message)
+        }
+      }); 
+
+  };
+
+  const closeModal=()=>{
+    reset()
+    setShowModal(false)
+  }
+  return (
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center shadow-xl border border-black  duration-1000 transition ease-in-out">
       <div className="relative w-11/12 max-w-lg bg-white rounded-lg shadow-lg border p-4 duration-1000 transition ease-in-out">
-        <div className="py-4 text-2lg font-medium">
-          Add New Bill Details
-        </div>
-        <form onSubmit={handleSubmit(addData)} className="flex flex-col gap-3" >
-        <div>
+        <div className="py-4 text-2lg font-medium">Add New Bill Details</div>
+        <form onSubmit={handleSubmit(addData)} className="flex flex-col gap-3">
+          <div>
             <label
-              className={`block mb-2 text-sm ${errors.fullName && "text-red-600"}`}
+              className={`block mb-2 text-sm ${
+                errors.fullName && "text-red-600"
+              }`}
             >
-             Full Name
+              Full Name
             </label>
             <input
               type="text"
@@ -41,7 +79,7 @@ console.log(data);
             <span className="text-red-600 text-sm">Full Name is required</span>
           )}
 
-<div>
+          <div>
             <label
               className={`block mb-2 text-sm ${errors.email && "text-red-600"}`}
             >
@@ -61,10 +99,12 @@ console.log(data);
             />
           </div>
           {errors.email && (
-            <span className="text-red-600 text-sm">Email Field is required</span>
+            <span className="text-red-600 text-sm">
+              Email Field is required
+            </span>
           )}
 
-<div>
+          <div>
             <label
               className={`block mb-2 text-sm ${errors.phone && "text-red-600"}`}
             >
@@ -80,19 +120,26 @@ console.log(data);
                   ? "border-red-600 focus:border-red-600"
                   : "border-gray-700"
               } `}
-              {...register("phone", { required: "required" ,minLength:{
-                value:11,
-                message: "Phone number must have at least 11 characters"
-              } })}
+              {...register("phone", {
+                required: "required",
+                minLength: {
+                  value: 11,
+                  message: "Phone number must have at least 11 characters",
+                },
+              })}
             />
           </div>
           {errors?.phone?.message && (
-            <span className="text-red-600 text-sm">{errors?.phone?.message}</span>
+            <span className="text-red-600 text-sm">
+              {errors?.phone?.message}
+            </span>
           )}
 
-<div>
+          <div>
             <label
-              className={`block mb-2 text-sm ${errors.amount && "text-red-600"}`}
+              className={`block mb-2 text-sm ${
+                errors.amount && "text-red-600"
+              }`}
             >
               Payable Amount
             </label>
@@ -110,19 +157,29 @@ console.log(data);
             />
           </div>
           {errors.amount && (
-            <span className="text-red-600 text-sm">Amount should be number</span>
+            <span className="text-red-600 text-sm">
+              Amount should be number
+            </span>
           )}
-          
-        <div className="py-4 flex justify-between">
-          <button type="submit" className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">Submit</button>
-          <button className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400" onClick={()=>setShowModal(false)}>
-            Close
-          </button>
-        </div>
+
+          <div className="py-4 flex justify-between">
+            <button
+              type="submit"
+              className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-gray-400"
+            >
+              Submit
+            </button>
+            <button
+              className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-gray-400"
+              onClick={closeModal}
+            >
+              Close
+            </button>
+          </div>
         </form>
       </div>
     </div>
-    );
+  );
 };
 
 export default Modal;
