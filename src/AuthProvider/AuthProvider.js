@@ -7,7 +7,7 @@ export const AuthContext = createContext()
 const AuthProvider = ({children}) => {
     const [user,setUser] = useState(null)
     const [loading,setLoading] = useState(true)
-    
+    const [bills, setBills] = useState([]);
     useEffect(()=>{
       setLoading(true)
         fetch(`${process.env.REACT_APP_serverURL}/api/getUserData`, {
@@ -35,7 +35,7 @@ const AuthProvider = ({children}) => {
   })
     },[])
 
-    const authInfo ={user,loading,setUser}
+    const authInfo ={user,loading,setUser,bills,setBills}
 
     
     return (

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
@@ -6,12 +7,12 @@ import Modal from "../../Components/Modal/Modal";
 const Table = () => {
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
-  const { user, loading } = useContext(AuthContext);
-  const [refresh,setRefresh] = useState(false);
+  const { user, loading,bills,setBills } = useContext(AuthContext);
+  const [refresh, setRefresh] = useState(false);
+  const [search, setSearch] = useState("");
+  // const [bills, setBills] = useState([]);
   const navigate = useNavigate();
-  const time= new Date().toLocaleString();
-
-  console.log(user);
+  const time = new Date().toLocaleString();
 
   useEffect(() => {
     if (!loading) {
@@ -20,6 +21,21 @@ const Table = () => {
       }
     }
   }, [token, user?.email, navigate, loading]);
+
+  useEffect(() => {
+    if (search === "") {
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list`)
+        .then((res) => res.json())
+        .then((data) => setBills(data));
+    } else {
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}`)
+        .then((res) => res.json())
+        .then((data) => setBills(data));
+    }
+  }, [search,refresh]);
+
+  console.log(bills);
+
   return (
     <>
       {loading ? (
@@ -31,8 +47,9 @@ const Table = () => {
               <h1 className="text-2xl ">Billing</h1>
               <input
                 type="text"
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search..."
-                className="border rounded-lg p-1 "
+                className="border rounded-lg p-1 text-[16px]"
               />
             </div>
             <div className="mt-5 md:mt-0">
@@ -73,30 +90,51 @@ const Table = () => {
               </thead>
 
               <tbody className="divide-y  divide-gray-200">
-                <tr>
-                  <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900  border border-r-gray-200">
-                    John Doe
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                    24/05/1995
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                    Web Developer
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                    $120,000
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                    $120,000
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-gray-700 ">
-                    $120,000
-                  </td>
-                </tr>
+                {bills?.length > 0 ? (
+                  <>
+                    {bills.map((bill) => (
+                      <tr key={bill._id}>
+                        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700  border border-r-gray-200">
+                          {bill.generatingId}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.fullName}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.email}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.phone}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.amount}
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
+                          
+                            <button>Edit</button> <h1>|</h1>
+                            <button>Delete</button>
+                         
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <tr className="text-xl m-2 text-red-600 w-full whitespace-nowrap px-4 py-2">
+                    <td>No Bills Found</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-          {showModal && <Modal setShowModal={setShowModal} user={user} time={time} refresh={refresh} setRefresh={setRefresh}/>}
+          {showModal && (
+            <Modal
+              setShowModal={setShowModal}
+              user={user}
+              time={time}
+              refresh={refresh}
+              setRefresh={setRefresh}
+            />
+          )}
         </div>
       )}
     </>
