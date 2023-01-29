@@ -16,61 +16,55 @@ const Table = () => {
             {/* table  */}
 
 <div className="overflow-hidden overflow-x-auto rounded-lg border border-gray-200 mt-10">
-  <table className="min-w-full divide-y divide-gray-200 text-sm">
-    <thead className="bg-gray-100">
+  <table className="min-w-full divide-y divide-gray-200 text-sm border-collapse ">
+    <thead className="bg-[#8ecae6]">
       <tr>
         <th
-          className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900"
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 border border-r-gray-200"
         >
-          Name
+          Billing ID
         </th>
         <th
-          className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900"
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 border border-r-gray-200"
         >
-          Date of Birth
+          Full Name
         </th>
         <th
-          className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900"
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 border border-r-gray-200"
         >
-          Role
+          Email
         </th>
         <th
-          className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900"
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 border border-r-gray-200"
         >
-          Salary
+          Phone
+        </th>
+        <th
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 border border-r-gray-200"
+        >
+          Paid Amount
+        </th>
+        <th
+          className="whitespace-nowrap px-4 py-2 text-left text-lg text-gray-900 "
+        >
+          Action
         </th>
       </tr>
     </thead>
 
-    <tbody className="divide-y divide-gray-200">
+    <tbody className="divide-y  divide-gray-200">
       <tr>
 
-        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900  border border-r-gray-200">
           John Doe
         </td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">Web Developer</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">$120,000</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">24/05/1995</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">Web Developer</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">$120,000</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">$120,000</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700 ">$120,000</td>
       </tr>
 
-      <tr>
-        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-          Jane Doe
-        </td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">04/11/1980</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">Web Designer</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">$100,000</td>
-      </tr>
-
-      <tr>
-        
-        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-          Gary Barlow
-        </td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">24/05/1995</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">Singer</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">$20,000</td>
-      </tr>
     </tbody>
   </table>
 </div>
