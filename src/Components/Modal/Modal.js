@@ -59,6 +59,7 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh,editbill,setEditBil
           if(result.success){
             toast.success("Bill Update successfully")
             reset()
+            setEditBill(null)
             setRefresh(!refresh)
             setShowModal(false)
           }else{

@@ -19,6 +19,8 @@ const Table = () => {
   const navigate = useNavigate();
   const time = new Date().toLocaleString();
 
+  
+
   useEffect(() => {
     if (!loading) {
       if (!token && !user?.email) {
@@ -178,7 +180,7 @@ const Table = () => {
             </table>
             {/* pagination  */}
             <div className="my-5 flex items-center justify-center gap-3">
-              {pages.length > 0 && [...Array(pages).keys()]?.map((number) => (
+              {pages > 0 && [...Array(pages).keys()]?.map((number) => (
                 <button
                   className={`${page === number && "bg-[#8ecae6] "} border-2 px-4 py-1.5 rounded-full font-bold`}
                   
