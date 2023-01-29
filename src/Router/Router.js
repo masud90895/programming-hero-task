@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
+import LoginForm from "../Pages/Athentication/Login/LoginForm";
+import RegistrationForm from "../Pages/Athentication/Registration/RegistrationForm";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import Table from "../Pages/Table/Table";
 
@@ -13,6 +15,15 @@ export const router = createBrowserRouter([
             path: "/",
             element : <Table/>
         },
+        {
+            path:"login",
+            element : <LoginForm/>
+        },
+        {
+            path: "register",
+            element:<RegistrationForm/>
+            
+        }
 
     ]
    }
