@@ -15,7 +15,6 @@ const Table = () => {
   const [size, setSize] = useState(10);
   const [page, setPage] = useState(0);
   const pages = Math.ceil(count / size);
-  // const pages = 10
 
   const navigate = useNavigate();
   const time = new Date().toLocaleString();
@@ -30,7 +29,11 @@ const Table = () => {
 
   useEffect(() => {
     if (search === "") {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}`)
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}`,{
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
         .then((res) => res.json())
         .then((data) =>{ 
           console.log(data)
@@ -39,7 +42,11 @@ const Table = () => {
 
         });
     } else {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}`)
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}`,{
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
@@ -135,7 +142,7 @@ const Table = () => {
               <tbody className="divide-y  divide-gray-200">
                 {bills?.length > 0 ? (
                   <>
-                    {bills.map((bill) => (
+                    {bills?.map((bill) => (
                       <tr key={bill._id}>
                         <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700  border border-r-gray-200">
                           {bill.generatingId}
@@ -171,7 +178,7 @@ const Table = () => {
             </table>
             {/* pagination  */}
             <div className="my-5 flex items-center justify-center gap-3">
-              {[...Array(pages).keys()].map((number) => (
+              {pages.length > 0 && [...Array(pages).keys()]?.map((number) => (
                 <button
                   className={`${page === number && "bg-[#8ecae6] "} border-2 px-4 py-1.5 rounded-full font-bold`}
                   

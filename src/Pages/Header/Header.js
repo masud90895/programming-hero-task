@@ -11,7 +11,7 @@ const Header = () => {
 
   useEffect(() => {
     const totalAmount = bills?.map((amount) => amount.amount);
-    const amount = totalAmount.reduce(
+    const amount = totalAmount?.reduce(
       (acc, curr) => parseFloat(acc) + parseFloat(curr),
       0
     );
