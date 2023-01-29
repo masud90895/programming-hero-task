@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import Modal from "../../Components/Modal/Modal";
 
@@ -34,7 +35,36 @@ const Table = () => {
     }
   }, [search,refresh]);
 
-  console.log(bills);
+
+const handleDelete =(id)=>{
+  console.log(id);
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You want to delete this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`${process.env.REACT_APP_serverURL}/api/delete-billing/${id}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+          setRefresh(!refresh)
+        });
+    }
+  })
+}
+  
 
   return (
     <>
@@ -112,7 +142,7 @@ const Table = () => {
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
                           
                             <button>Edit</button> <h1>|</h1>
-                            <button>Delete</button>
+                            <button onClick={()=>handleDelete(bill._id)}>Delete</button>
                          
                         </td>
                       </tr>
