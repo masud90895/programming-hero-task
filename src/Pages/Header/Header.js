@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import logo from "../../assists/Power Hack(white).png"
@@ -6,10 +6,20 @@ import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 
 const Header = () => {
-    const {bills} = useContext(AuthContext)
+    const {bills,user} = useContext(AuthContext)
+    const token = localStorage.getItem('token')
 
-    const totalAmount = bills?.map((amount) => amount.amount)
-    const sumAmount = totalAmount.reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
+    const [sumAmount,setSumAmount] = useState(0)
+
+    
+    
+    
+    
+    useEffect(()=>{
+       const totalAmount = bills?.map((amount) => amount.amount)
+    const amount = totalAmount.reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
+    setSumAmount(amount)
+   },[bills])
 
    
 
