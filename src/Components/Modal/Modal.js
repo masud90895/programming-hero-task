@@ -8,10 +8,9 @@ const Modal = ({setShowModal}) => {
     formState: { errors },
     reset,
   } = useForm();
-  const addData=(data)=>{
-    
-
-  }
+  const addData=(data)=>{  
+console.log(data);
+}
     return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center shadow-xl border border-black  duration-1000 transition ease-in-out">
       <div className="relative w-11/12 max-w-lg bg-white rounded-lg shadow-lg border p-4 duration-1000 transition ease-in-out">
@@ -81,11 +80,14 @@ const Modal = ({setShowModal}) => {
                   ? "border-red-600 focus:border-red-600"
                   : "border-gray-700"
               } `}
-              {...register("phone", { required: true })}
+              {...register("phone", { required: "required" ,minLength:{
+                value:11,
+                message: "Phone number must have at least 11 characters"
+              } })}
             />
           </div>
-          {errors.phone && (
-            <span className="text-red-600 text-sm">Phone Number is required</span>
+          {errors?.phone?.message && (
+            <span className="text-red-600 text-sm">{errors?.phone?.message}</span>
           )}
 
 <div>
@@ -95,11 +97,11 @@ const Modal = ({setShowModal}) => {
               Payable Amount
             </label>
             <input
-              type="amount"
+              type="number"
               name="amount"
               id="amount"
               placeholder="Enter Payable Amount..."
-              className={`w-full px-3 text-[16px] py-2 border rounded-md ${
+              className={`w-full px-3 text-[16px] py-2 border appearance-none rounded-md ${
                 errors.amount
                   ? "border-red-600 focus:border-red-600"
                   : "border-gray-700"
@@ -108,7 +110,7 @@ const Modal = ({setShowModal}) => {
             />
           </div>
           {errors.amount && (
-            <span className="text-red-600 text-sm">Amount is required</span>
+            <span className="text-red-600 text-sm">Amount should be number</span>
           )}
           
         <div className="py-4 flex justify-between">
