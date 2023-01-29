@@ -2,7 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
-const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
+const Modal = ({ setShowModal, user, time,setRefresh,refresh,editbill,setEditBill }) => {
+
+  console.log(editbill);
 
   const {
     register,
@@ -22,37 +24,60 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
       time,
       AddedUserEmail: user?.email
     }
-    fetch(`${process.env.REACT_APP_serverURL}/api/add-billing`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(billInfo),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
-        if(result.success){
-
-          toast.success("Product added successfully")
-          reset()
-          setRefresh(!refresh)
-          setShowModal(false)
-        }else{
-          toast.error(result.message)
-        }
-      }); 
+    if(!editbill){
+      fetch(`${process.env.REACT_APP_serverURL}/api/add-billing`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(billInfo),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log(result);
+          if(result.success){
+  
+            toast.success("Bill added successfully")
+            reset()
+            setRefresh(!refresh)
+            setShowModal(false)
+          }else{
+            toast.error(result.message)
+          }
+        }); 
+    }else{
+      fetch(`${process.env.REACT_APP_serverURL}/api/update-billing/${editbill?._id}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(billInfo),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log(result);
+          if(result.success){
+            toast.success("Bill Update successfully")
+            reset()
+            setRefresh(!refresh)
+            setShowModal(false)
+          }else{
+            toast.error(result.message)
+          }
+        }); 
+    }
 
   };
 
   const closeModal=()=>{
     reset()
     setShowModal(false)
+    setEditBill(null)
   }
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center shadow-xl border border-black  duration-1000 transition ease-in-out">
       <div className="relative w-11/12 max-w-lg bg-white rounded-lg shadow-lg border p-4 duration-1000 transition ease-in-out">
-        <div className="py-4 text-2lg font-medium">Add New Bill Details</div>
+        <div className="py-4 text-2lg font-medium">{editbill ? "Update bill Details" : "Add New Bill Details"}</div>
         <form onSubmit={handleSubmit(addData)} className="flex flex-col gap-3">
           <div>
             <label
@@ -65,6 +90,7 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
             <input
               type="text"
               name="fullName"
+              defaultValue={editbill?.fullName}
               id="fullName"
               placeholder="Enter fullName..."
               className={`w-full px-3 text-[16px] py-2 border rounded-md ${
@@ -88,6 +114,7 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
             <input
               type="email"
               name="email"
+              defaultValue={editbill?.email}
               id="email"
               placeholder="Enter email..."
               className={`w-full px-3 text-[16px] py-2 border rounded-md ${
@@ -113,6 +140,7 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
             <input
               type="phone"
               name="phone"
+              defaultValue={editbill?.phone}
               id="phone"
               placeholder="Enter phone..."
               className={`w-full px-3 text-[16px] py-2 border rounded-md ${
@@ -146,6 +174,7 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
             <input
               type="number"
               name="amount"
+              defaultValue={editbill?.amount}
               id="amount"
               placeholder="Enter Payable Amount..."
               className={`w-full px-3 text-[16px] py-2 border appearance-none rounded-md ${
@@ -163,12 +192,19 @@ const Modal = ({ setShowModal, user, time,setRefresh,refresh }) => {
           )}
 
           <div className="py-4 flex justify-between">
-            <button
+            {
+              editbill ? <button
+              type="submit"
+              className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-gray-400"
+            >
+              Update
+            </button> : <button
               type="submit"
               className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-gray-400"
             >
               Submit
             </button>
+            }
             <button
               className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-gray-400"
               onClick={closeModal}

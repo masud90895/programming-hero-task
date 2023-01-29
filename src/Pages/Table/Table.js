@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -8,10 +7,10 @@ import Modal from "../../Components/Modal/Modal";
 const Table = () => {
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
-  const { user, loading,bills,setBills } = useContext(AuthContext);
+  const { user, loading, bills, setBills } = useContext(AuthContext);
   const [refresh, setRefresh] = useState(false);
   const [search, setSearch] = useState("");
-  // const [bills, setBills] = useState([]);
+  const [editbill, setEditBill] = useState(null);
   const navigate = useNavigate();
   const time = new Date().toLocaleString();
 
@@ -33,38 +32,37 @@ const Table = () => {
         .then((res) => res.json())
         .then((data) => setBills(data));
     }
-  }, [search,refresh]);
+  }, [search, refresh]);
 
+  const handleDelete = (id) => {
+    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`${process.env.REACT_APP_serverURL}/api/delete-billing/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            setRefresh(!refresh);
+          });
+      }
+    });
+  };
 
-const handleDelete =(id)=>{
-  console.log(id);
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to delete this!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      fetch(`${process.env.REACT_APP_serverURL}/api/delete-billing/${id}`, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          Swal.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          )
-          setRefresh(!refresh)
-        });
-    }
-  })
-}
-  
+  const handleEdit = (bill) => {
+    setShowModal(true);
+    setEditBill(bill)
+  };
 
   return (
     <>
@@ -128,22 +126,25 @@ const handleDelete =(id)=>{
                           {bill.generatingId}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                        {bill.fullName}
+                          {bill.fullName}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                        {bill.email}
+                          {bill.email}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                        {bill.phone}
+                          {bill.phone}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                        {bill.amount}
+                          {bill.amount}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
-                          
-                            <button>Edit</button> <h1>|</h1>
-                            <button onClick={()=>handleDelete(bill._id)}>Delete</button>
-                         
+                          <button onClick={() => handleEdit(bill)}>
+                            Edit
+                          </button>{" "}
+                          <h1>|</h1>
+                          <button onClick={() => handleDelete(bill._id)}>
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -156,13 +157,15 @@ const handleDelete =(id)=>{
               </tbody>
             </table>
           </div>
-          {showModal && (
+          {showModal  && (
             <Modal
               setShowModal={setShowModal}
               user={user}
               time={time}
               refresh={refresh}
               setRefresh={setRefresh}
+              editbill={editbill}
+              setEditBill={setEditBill}
             />
           )}
         </div>
