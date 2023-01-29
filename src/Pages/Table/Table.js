@@ -11,6 +11,12 @@ const Table = () => {
   const [refresh, setRefresh] = useState(false);
   const [search, setSearch] = useState("");
   const [editbill, setEditBill] = useState(null);
+  const [count, setCount] = useState(0);
+  const [size, setSize] = useState(10);
+  const [page, setPage] = useState(0);
+  const pages = Math.ceil(count / size);
+  // const pages = 10
+
   const navigate = useNavigate();
   const time = new Date().toLocaleString();
 
@@ -24,15 +30,24 @@ const Table = () => {
 
   useEffect(() => {
     if (search === "") {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list`)
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}`)
         .then((res) => res.json())
-        .then((data) => setBills(data));
+        .then((data) =>{ 
+          console.log(data)
+          setBills(data?.bills)
+          setCount(data?.count)
+
+        });
     } else {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}`)
+      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}`)
         .then((res) => res.json())
-        .then((data) => setBills(data));
+        .then((data) => {
+          console.log(data);
+          setBills(data?.bills)
+          setCount(data?.count)
+        });
     }
-  }, [search, refresh]);
+  }, [search, refresh,page,size,setBills]);
 
   const handleDelete = (id) => {
     console.log(id);
@@ -61,7 +76,7 @@ const Table = () => {
 
   const handleEdit = (bill) => {
     setShowModal(true);
-    setEditBill(bill)
+    setEditBill(bill);
   };
 
   return (
@@ -138,9 +153,7 @@ const Table = () => {
                           {bill.amount}
                         </td>
                         <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
-                          <button onClick={() => handleEdit(bill)}>
-                            Edit
-                          </button>{" "}
+                          <button onClick={() => handleEdit(bill)}>Edit</button>{" "}
                           <h1>|</h1>
                           <button onClick={() => handleDelete(bill._id)}>
                             Delete
@@ -156,8 +169,21 @@ const Table = () => {
                 )}
               </tbody>
             </table>
+            {/* pagination  */}
+            <div className="my-5 flex items-center justify-center gap-3">
+              {[...Array(pages).keys()].map((number) => (
+                <button
+                  className={`${page === number && "bg-[#8ecae6] "} border-2 px-4 py-1.5 rounded-full font-bold`}
+                  
+                  onClick={() => setPage(number)}
+                  key={number}
+                >
+                  {number + 1}
+                </button>
+              ))}
+            </div>
           </div>
-          {showModal  && (
+          {showModal && (
             <Modal
               setShowModal={setShowModal}
               user={user}
