@@ -12,7 +12,9 @@ Hosted in firebase -> [Power Hack](https://programming-hero-task.netlify.app/)
 ## Github Link (Server)
 
 -> [server](https://github.com/masud90895/programming-hero-task-server)
+## github link (problem solved)
 
+=> [github link](https://github.com/masud90895/javascript-problem-solved)
 
 ## 🔗 Social Links
 
