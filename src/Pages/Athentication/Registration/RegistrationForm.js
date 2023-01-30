@@ -18,12 +18,19 @@ const RegistrationForm = () => {
 
   const RegistrationData = (data) => {
     console.log(data);
+    const userData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+      role: "user",
+    };
     fetch(`${process.env.REACT_APP_serverURL}/api/registration`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(userData),
     })
       .then((res) => res.json())
       .then((result) => {
@@ -40,10 +47,10 @@ const RegistrationForm = () => {
             .then((data) => {
               console.log(data);
               // set localStorage
-			  toast.success("User created successfully.please login");
+              toast.success("User created successfully.please login");
               localStorage.setItem("token", data.token);
-			  reset();
-			  navigate('/')
+              reset();
+              navigate("/");
             });
         } else if (result.error === "User Exists") {
           toast.error("User already exists");

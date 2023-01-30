@@ -19,8 +19,6 @@ const Table = () => {
   const navigate = useNavigate();
   const time = new Date().toLocaleString();
 
-  
-
   useEffect(() => {
     if (!loading) {
       if (!token && !user?.email) {
@@ -31,32 +29,37 @@ const Table = () => {
 
   useEffect(() => {
     if (search === "") {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}`,{
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) =>{ 
-          console.log(data)
-          setBills(data?.bills)
-          setCount(data?.count)
-
-        });
-    } else {
-      fetch(`${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}`,{
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      fetch(
+        `${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}&email=${user?.email}`,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-          setBills(data?.bills)
-          setCount(data?.count)
+          setBills(data?.bills);
+          setCount(data?.count);
+        });
+    } else {
+      fetch(
+        `${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}&email=${user?.email}`,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setBills(data?.bills);
+          setCount(data?.count);
         });
     }
-  }, [search, refresh,page,size,setBills]);
+  }, [search, refresh, page, size, setBills,user?.email]);
 
   const handleDelete = (id) => {
     console.log(id);
@@ -180,16 +183,18 @@ const Table = () => {
             </table>
             {/* pagination  */}
             <div className="my-5 flex items-center justify-center gap-3">
-              {pages > 0 && [...Array(pages).keys()]?.map((number) => (
-                <button
-                  className={`${page === number && "bg-[#8ecae6] "} border-2 px-4 py-1.5 rounded-full font-bold`}
-                  
-                  onClick={() => setPage(number)}
-                  key={number}
-                >
-                  {number + 1}
-                </button>
-              ))}
+              {pages > 0 &&
+                [...Array(pages).keys()]?.map((number) => (
+                  <button
+                    className={`${
+                      page === number && "bg-[#8ecae6] "
+                    } border-2 px-4 py-1.5 rounded-full font-bold`}
+                    onClick={() => setPage(number)}
+                    key={number}
+                  >
+                    {number + 1}
+                  </button>
+                ))}
             </div>
           </div>
           {showModal && (

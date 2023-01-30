@@ -12,7 +12,7 @@ const LoginForm = () => {
   } = useForm();
   const navigate = useNavigate();
   let location = useLocation();
-let from = location.state?.from?.pathname || "/";
+  let from = location.state?.from?.pathname || "/";
 
   const loginData = (data) => {
     console.log(data);
@@ -32,9 +32,9 @@ let from = location.state?.from?.pathname || "/";
           toast.error(result.error);
         } else if (result.status === "ok") {
           toast.success("Login successful");
-		  localStorage.setItem("token",result.data)
+          localStorage.setItem("token", result.data);
           reset();
-          navigate("/")
+          navigate("/");
         }
       });
   };
