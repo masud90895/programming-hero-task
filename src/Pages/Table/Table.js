@@ -7,8 +7,9 @@ import Modal from "../../Components/Modal/Modal";
 const Table = () => {
   const [showModal, setShowModal] = useState(false);
   const token = localStorage.getItem("token");
-  const { user, loading, bills, setBills } = useContext(AuthContext);
-  const [refresh, setRefresh] = useState(false);
+  const { user, loading, bills, setBills ,setRefresh,refresh} = useContext(AuthContext);
+  // const [refresh, setRefresh] = useState(false);
+  const [loadings,setLoadings] = useState(true);
   const [search, setSearch] = useState("");
   const [editbill, setEditBill] = useState(null);
   const [count, setCount] = useState(0);
@@ -29,6 +30,7 @@ const Table = () => {
 
   useEffect(() => {
     if (search === "") {
+      setLoadings(true)
       fetch(
         `${process.env.REACT_APP_serverURL}/api/billing-list?page=${page}&size=${size}&email=${user?.email}`,
         {
@@ -42,8 +44,10 @@ const Table = () => {
           console.log(data);
           setBills(data?.bills);
           setCount(data?.count);
+          setLoadings(false)
         });
     } else {
+      setLoadings(true)
       fetch(
         `${process.env.REACT_APP_serverURL}/api/billing-list/${search}?page=${page}&size=${size}&email=${user?.email}`,
         {
@@ -57,6 +61,7 @@ const Table = () => {
           console.log(data);
           setBills(data?.bills);
           setCount(data?.count);
+          setLoadings(false)
         });
     }
   }, [search, refresh, page, size, setBills,user?.email]);
@@ -73,6 +78,7 @@ const Table = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setLoadings(true)
         fetch(`${process.env.REACT_APP_serverURL}/api/delete-billing/${id}`, {
           method: "DELETE",
         })
@@ -80,6 +86,7 @@ const Table = () => {
           .then((data) => {
             console.log(data);
             Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            setLoadings(false)
             setRefresh(!refresh);
           });
       }
@@ -144,42 +151,44 @@ const Table = () => {
                 </tr>
               </thead>
 
-              <tbody className="divide-y  divide-gray-200">
-                {bills?.length > 0 ? (
-                  <>
-                    {bills?.map((bill) => (
-                      <tr key={bill._id}>
-                        <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700  border border-r-gray-200">
-                          {bill.generatingId}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                          {bill.fullName}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                          {bill.email}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                          {bill.phone}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
-                          {bill.amount}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
-                          <button onClick={() => handleEdit(bill)}>Edit</button>{" "}
-                          <h1>|</h1>
-                          <button onClick={() => handleDelete(bill._id)}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                ) : (
-                  <tr className="text-xl m-2 text-red-600 w-full whitespace-nowrap px-4 py-2">
-                    <td>No Bills Found</td>
-                  </tr>
-                )}
-              </tbody>
+             {
+              loadings ? <tbody ><tr  className="text-2xl text-center"><td>Loadings ...</td></tr></tbody> :  <tbody className="divide-y  divide-gray-200">
+              {bills?.length > 0 ? (
+                <>
+                  {bills?.map((bill) => (
+                    <tr key={bill._id}>
+                      <td className="whitespace-nowrap px-4 py-2 font-medium text-gray-700  border border-r-gray-200">
+                        {bill.generatingId}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.fullName}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.email}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.phone}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 border border-r-gray-200">
+                        {bill.amount}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-2 text-gray-700 flex gap-3 font-bold">
+                        <button onClick={() => handleEdit(bill)}>Edit</button>{" "}
+                        <h1>|</h1>
+                        <button onClick={() => handleDelete(bill._id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <tr className="text-xl m-2 text-red-600 w-full whitespace-nowrap px-4 py-2">
+                  <td>No Bills Found</td>
+                </tr>
+              )}
+            </tbody>
+             }
             </table>
             {/* pagination  */}
             <div className="my-5 flex items-center justify-center gap-3">

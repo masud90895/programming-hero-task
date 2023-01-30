@@ -12,7 +12,7 @@ const RegistrationForm = () => {
     reset,
   } = useForm();
 
-  const { user } = useContext(AuthContext);
+  const { user,refresh,setRefresh } = useContext(AuthContext);
   console.log(user);
   const navigate = useNavigate();
 
@@ -47,9 +47,10 @@ const RegistrationForm = () => {
             .then((data) => {
               console.log(data);
               // set localStorage
-              toast.success("User created successfully.please login");
+              toast.success("User created successfully");
               localStorage.setItem("token", data.token);
               reset();
+              setRefresh(!refresh)
               navigate("/");
             });
         } else if (result.error === "User Exists") {

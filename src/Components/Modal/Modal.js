@@ -43,9 +43,9 @@ const Modal = ({
         .then((result) => {
           console.log(result);
           if (result.success) {
+            setRefresh(!refresh);
             toast.success("Bill added successfully");
             reset();
-            setRefresh(!refresh);
             setShowModal(false);
           } else {
             toast.error(result.message);
@@ -67,9 +67,9 @@ const Modal = ({
           console.log(result);
           if (result.success) {
             toast.success("Bill Update successfully");
-            reset();
             setEditBill(null);
             setRefresh(!refresh);
+            reset();
             setShowModal(false);
           } else {
             toast.error(result.message);
